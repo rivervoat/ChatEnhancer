@@ -1,0 +1,33 @@
+{
+    "manifest_version": 2,
+    "name":             "Voat ChatEnhancer",
+    "short_name":       "ChatEnhancer",
+    "version":          "0.2.0",
+    "description":      "Ideas for new features for Voat chat, implemented. Not affiliated with Voat.",
+    "author":           "/user/River",
+    "homepage_url":     "https://github.com/rivervoat/ChatEnhancer",
+    "icons": { "128":"icon128.png", "48":"icon48.png", "16":"icon16.png" },
+    "page_action": {
+        "default_icon": {
+            "19": "icon19.png",
+            "38" : "icon38.png"
+        },
+        "default_title": "Voat ChatEnhancer",
+        "default_popup": "popup.html"
+    },
+    "background": {
+        "scripts": ["background.js"],
+        "persistent" : false
+    },
+    "content_scripts": [
+        {
+            "matches": ["https://voat.co/v/*"],
+            "js": ["contentscript.js"]
+        }
+    ],
+    "web_accessible_resources": ["contentscript.js", "ChatEnhancer.js", "theme.css"],
+    "permissions" : [
+        "declarativeContent",
+        "https://voat.co/"
+    ]
+}
