@@ -61,7 +61,7 @@ ChatImprover.prototype.loop = function() {
         return 0;
     }
     //find chatbox element
-    chatbox = document.getElementById('subverseChatRoom');
+    var chatbox = document.getElementById('subverseChatRoom');
     if (chatbox === null) {
         console.log("err, couldn't find chatbox. ChatImprover is stopping");
         return 1;
@@ -70,8 +70,12 @@ ChatImprover.prototype.loop = function() {
     // (obvious O(linear) improvements could be made here
     // TODO: instead just iterate back to find the last marked
     // element then nextElementSibling fwd and apply changes)
-    var i,j, el=chatbox.firstElementChild, arr=[el];
-    while (el=el.nextElementSibling) { arr.push(el); }
+    var x,i,j, el=chatbox.firstElementChild, arr=[];
+    var speaker;
+    while (el) {
+        arr.push(el);
+        el=el.nextElementSibling;
+    }
     
     //assuming no options change, so only start checking
     //at last element.
@@ -82,23 +86,23 @@ ChatImprover.prototype.loop = function() {
         el=arr[i];
         // if it has a child element assume first one
         // is a username.
-        if (el.firstElementChild == undefined) {
+        if (el.firstElementChild === undefined) {
             continue;
         }
         if (! ('original' in el.attributes)) {
-            el.attributes['original'] = el.innerHTML;
+            el.attributes.original = el.innerHTML;
         }
         x = document.createElement('div');
-        x.innerHTML=el.attributes['original'];
+        x.innerHTML=el.attributes.original;
         speaker = x.firstElementChild.textContent;
         // expect an exact match.
         if (this.blocked_users.indexOf(speaker) != -1) {
             x.style[this.csshide.att] = this.csshide.val;
         }
 	if (this.color_whole_message) {
-	    x.style['color']=this.stringToColour(speaker);
+	    x.style.color=this.stringToColour(speaker);
         } else {
-	    x.firstElementChild.style['color']=this.stringToColour(speaker);
+	        x.firstElementChild.style.color=this.stringToColour(speaker);
         }
         // for every highlight term, do a search
         // of the textContent - you can
@@ -134,7 +138,7 @@ ChatImprover.prototype.loop = function() {
         el.innerHTML=x.innerHTML;
         
         el.style.cssText=x.style.cssText;
-    };
+    }
     // run this function again in 30ms after end
     // we use timeOut to put a damper on potential scaling
     // delays / whatever browser scheduling for now,
@@ -146,7 +150,7 @@ ChatImprover.prototype.loop = function() {
     window.setTimeout(reloop, 20);
     return 0;
 };
-
+var chat;
 window.chat = chat = new ChatImprover();
 chat.loop();
 
