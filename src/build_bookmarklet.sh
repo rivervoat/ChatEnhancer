@@ -1,2 +1,3 @@
 #!/bin/bash
-m4 -D the_original="`cat ChatEnhancer.js`" bookmarklet.js.m4 | sed -r 's/\/\/.*$//g' | tr '\n' ' ' > ../bookmarklet.js
+original="`sed -r 's/^ *\/\/.*$//g' ChatEnhancer.js | tr '\n' ' '`"
+m4 -D the_original="$original" bookmarklet.js.m4 > ../bookmarklet.js
