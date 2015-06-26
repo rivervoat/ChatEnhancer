@@ -1,0 +1,11 @@
+{
+  "title": "Voat ChatEnhancer",
+  "name": "voat-chat-enhancer",
+  "version": "0.2.1"
+  "description": "Ideas for new features for Voat chat, implemented. Not affiliated with Voat.",
+  "author": "River",
+  "homepage": "https://github.com/rivervoat/ChatEnhancer",
+  "icon": "data/icon-48.png",
+  "license": "Apache 2.0",
+  "id": "jid1-CgFyccl8Ie1rCw",
+}
