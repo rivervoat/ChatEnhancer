@@ -7,6 +7,7 @@ pageMod.PageMod({
     include:"*.voat.co",
 //    contentScript: 'document.body.innerHTML="<h1>testing</h1"'
     contentScriptFile: self.data.url('content-script.js')
+//    contentScriptFile: self.data.url('ChatEnhancer.js')    
 });
 
 var exampleCallback = function() {

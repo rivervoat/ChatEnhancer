@@ -1,15 +1,16 @@
 {
-  "title": "Voat ChatEnhancer",
-  "name": "voat-chat-enhancer",
-  "version": "0.2.1",
-  "description": "Ideas for new features for Voat chat, implemented. Not affiliated with Voat.",
-  "main": "index.js",
-  "author": "/user/River",
-  "homepage": "https://github.com/rivervoat/ChatEnhancer",
-  "icon":"data/icon-48.png",
-  "engines": {
-    "firefox": ">=38.0a1",
-    "fennec": ">=38.0a1"
-  },
-  "license": "Apache 2.0"
+    "license": "Apache 2.0", 
+    "engines": {
+        "firefox": ">=38.0a1", 
+        "fennec": ">=38.0a1"
+    }, 
+    "description": "Ideas for new features for Voat chat, implemented. Not affiliated with Voat.", 
+    "icon": "data/icon-48.png", 
+    "author": "/user/River", 
+    "title": "Voat ChatEnhancer", 
+    "version": "0.2.1", 
+    "main": "index.js", 
+    "homepage": "https://github.com/rivervoat/ChatEnhancer", 
+    "id": "jid1-WOwQKxXcEhPbQg", 
+    "name": "voat-chat-enhancer"
 }
