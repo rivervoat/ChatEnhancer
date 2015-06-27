@@ -1,4 +1,4 @@
-// Voat Chat Enhancer v.0.1.8
+// Voat Chat Enhancer
 // if you were linked directly here, 
 // please go to https://voat.co/v/riverstechstuff/comments/171279
 // for the latest version and usage instruction.
