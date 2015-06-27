@@ -47,7 +47,7 @@ Pauser.prototype.delete = function() {
 
 
 Pauser.prototype.onScroll = function() {
-    var atEnd=false;
+    var diff, atEnd=false;
     if ('scrollTopMax' in this.el) {
         atEnd=this.el.scrollTop==this.el.scrollTopMax;
     } else {
@@ -63,7 +63,7 @@ Pauser.prototype.onScroll = function() {
        if (! (this.paused)) { return; }
        // otherwise how long has it been since the
        // last manual move?
-       var diff= now_ms() - this.startTime;
+       diff= now_ms() - this.startTime;
        // if greater than pause duration, we'll stay
        // at the bottom and no longer even consider
        // the time diff until the next manual move.
@@ -102,7 +102,19 @@ Pauser.prototype.onScroll = function() {
    // neither the bottom or the pause position,
    // that signifies manual movement which means
    // to pause.
-   } else if (this.el.scrollTop != this.pausePos) {
+    } else if (this.el.scrollTop == this.pausePos) {
+        //for consistent user experience
+        // (either scroll to the bottom if there was any message,
+        //  which is not so intuitive itself and requires
+        //  tracking of that and is not, or scroll to the bottom
+        //  after 15s message or not)
+       diff= now_ms() - this.startTime;
+       if (diff > 1000*this.pauseDuration) { 
+           this.paused=false;
+           //safe value and no dependency on scrollTopMax
+           this.scrollTop=(this.el.scrollHeight - this.el.clientHeight)-1;
+       }
+    } else if (this.el.scrollTop != this.pausePos) {
        this.paused=true;
        this.pausePos=this.el.scrollTop;
        this.startTime=now_ms();
