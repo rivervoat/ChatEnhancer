@@ -251,7 +251,7 @@ ChatImprover.prototype.loop = function() {
             //we didn't display images automatically, 
             //like voat or other site people click lots of
             //unknown links all the time.
-            x.innerHTML = (x.innerHTML+' ').replace(new RegExp('([^">])(https?://[^ ?$]*\.(jpg|png)) ', 'gi'), '$1<a href="$2"><img src="$2" style="max-height:' + this.mediaSize +'; vertical-align: top"></img></a> ').slice(0,-1);
+            x.innerHTML = (x.innerHTML+' ').replace(new RegExp('([^">])(https?://[^ ?$]*\.(jpg|png)) ', 'gi'), '$1<a href="$2" target="_blank"><img src="$2" style="max-height:' + this.mediaSize +'; vertical-align: top"></img></a> ').slice(0,-1);
         }
         if (this.video) {
             //check for videos and tag em.
@@ -260,7 +260,7 @@ ChatImprover.prototype.loop = function() {
         //the way we avoid re-adding images and videos
         //for now is to just not add tags to links
         //which begin with a quote or tagend.
-        x.innerHTML = x.innerHTML.replace(new RegExp('([^">])(https?://[^ $]*)', 'gi'), '$1<a href="$2">$2</a>');
+        x.innerHTML = x.innerHTML.replace(new RegExp('([^">])(https?://[^ $]*)', 'gi'), '$1<a href="$2" target="_blank">$2</a>');
         
         el.innerHTML=x.innerHTML;
         
