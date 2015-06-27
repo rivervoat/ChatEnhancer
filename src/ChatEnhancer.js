@@ -17,6 +17,8 @@ var std_blocklist=['billajong9', 'caffeine_pills_', 'campsont29', 'bpiniggiger',
 //chat.mentions=[my_username, 'yo!'];
 //chat.ment('cool_person');
 //chat.images=true;
+//chat.imageEmbiggening=true;
+//chat.embiggenedMediaSize='x2';
 //chat.video=true;
 //chat.mediaSize='175px';
 
@@ -43,7 +45,6 @@ Pauser = function(el, pauseDuration) {
 Pauser.prototype.delete = function() {
     this.el.removeEventListener('scroll', this.callbackfn);
 };
-
 
 
 Pauser.prototype.onScroll = function() {
@@ -129,6 +130,8 @@ var ChatImprover = function() {
     this.images=true;
     this.video=true;
     this.mediaSize='175px';
+    this.imageEmbiggening=true;
+    this.embiggenedMediaSize='x2';
     this.scrollPause=15;
     this.csshide = { att: 'display', val:'none'};   
     this.cssmentioned = { att: 'color', val: 'red'};
@@ -157,6 +160,29 @@ ChatImprover.prototype.block = function(username) {
 
 ChatImprover.prototype.ment = function(searchterm) {
     this.mentions.push(searchterm);
+};
+ChatImprover.prototype.embiggen = function(e) {
+    var img = e.toElement,
+        maxHeight = img.style.maxHeight;
+    if (maxHeight==this.mediaSize) {
+        //not embiggen'd. embiggen now.
+        emb_size= this.embiggenedMediaSize;
+        if (emb_size[0]=='x') {
+            //its a product of the default mediaSize
+            var factor=emb_size.slice(1),
+                re_metric=new RegExp('([0-9\.]+)(.*)', ''),
+                metric = this.mediaSize.match(re_metric),
+                qty = parseFloat(metric[1]),
+                unit = metric[2],
+                product=String(factor*qty) + unit;
+            img.style.maxHeight = product;
+        } else {
+            img.style.maxHeight = emb_size;
+        }
+    } else {
+        //already embiggen'd. returned to unembiggen'd size.
+        img.style.maxHeight = this.mediaSize;
+    }
 };
 
 ChatImprover.prototype.stringToColour = function(str) {
@@ -199,11 +225,13 @@ ChatImprover.prototype.loop = function() {
     // element then nextElementSibling fwd and apply changes)
     var x,i,j, el=chatbox.firstElementChild, arr=[];
     var speaker;
+    var context = this;
+
     while (el) {
         arr.push(el);
         el=el.nextElementSibling;
     }
-    
+    var embiggenCallback = function(e) { context.embiggen(e); };  
     //assuming no options change, so only start checking
     //at last element.
     i=this.checked_up_to;
@@ -243,6 +271,7 @@ ChatImprover.prototype.loop = function() {
         }
         
         //yes this section needs to be cleaned up.
+        //yes. yes. I know.
         if (this.images) {
             //check for images and tag em.
             //blocking question mark so people can't
@@ -251,7 +280,12 @@ ChatImprover.prototype.loop = function() {
             //we didn't display images automatically, 
             //like voat or other site people click lots of
             //unknown links all the time.
-            x.innerHTML = (x.innerHTML+' ').replace(new RegExp('([^">])(https?://[^ ?$]*\.(jpg|png)) ', 'gi'), '$1<a href="$2" target="_blank"><img src="$2" style="max-height:' + this.mediaSize +'; vertical-align: top"></img></a> ').slice(0,-1);
+            var find_image=new RegExp('([^">])(https?://[^ ?$]*\.(jpg|png)) ', 'gi');
+            if (this.imageEmbiggening) {
+                x.innerHTML = (x.innerHTML+' ').replace(find_image, '$1<img src="$2" style="max-height:' + this.mediaSize +'; vertical-align: top"></img><a href="$2" target="_blank" style="font-size:0.5em">(link)</a> ').slice(0,-1);
+            } else {
+                x.innerHTML = (x.innerHTML+' ').replace(find_image, '$1<a href="$2" target="_blank"><img src="$2" style="max-height:' + this.mediaSize +'; vertical-align: top"></img></a> ').slice(0,-1);
+            }
         }
         if (this.video) {
             //check for videos and tag em.
@@ -263,7 +297,18 @@ ChatImprover.prototype.loop = function() {
         x.innerHTML = x.innerHTML.replace(new RegExp('([^">])(https?://[^ $]*)', 'gi'), '$1<a href="$2" target="_blank">$2</a>');
         
         el.innerHTML=x.innerHTML;
-        
+        var imgnl=el.getElementsByTagName('img');
+        var imgElArr = [];
+
+        if (this.imageEmbiggening) {
+            for(var imgEl = imgnl.length; imgEl--; imgEl=0){
+                imgnl[imgEl].addEventListener('click',
+                                               embiggenCallback);
+            }
+        }
+        imgElArr.map(function() {
+            
+        });
         el.style.cssText=x.style.cssText;
     }
     // run this function again in 30ms after end
@@ -272,7 +317,7 @@ ChatImprover.prototype.loop = function() {
     // and aspire to 30ms so spammers messages are
     // barely a visual disruption. (most humans can notice
     // differences that last about 10ms)
-    var context = this;
+
     var reloop=function() { context.loop(); };
     window.setTimeout(reloop, 20);
     return 0;
