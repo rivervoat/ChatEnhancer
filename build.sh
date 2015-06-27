@@ -8,7 +8,7 @@ DIR=`dirname "$0"`; SCRIPT_PATH=`eval "cd \"$SCRIPT_PATH\" && pwd"`
 mkdir -p ${DIR}/out_standalone
 
 tgt_bookmarklet() {
-    ${DIR}/bookmarklet/./generate.sh > ${DIR}/out_standalone/bookmarklet.js
+    ${DIR}/bookmarklet/generate.sh > ${DIR}/out_standalone/bookmarklet.js
 }
 
 tgt_chrome() {
