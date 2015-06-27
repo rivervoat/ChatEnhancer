@@ -6,16 +6,110 @@
 var my_username=document.getElementsByClassName('user')[0].firstElementChild.textContent;
 var std_blocklist=['billajong9', 'caffeine_pills_', 'campsont29', 'bpiniggiger', 'mkwarmansBRODAWG', 'GreatRedditMigration'];
 
+//begin options
+//these are the default options, modify them as you see fit.
+//after you set one or more of these, to apply them retroactively run
+//chat.update(); 
+//if you have a long chatlog this may take a little time
+
+//chat.blocked_users=std_blocklist;
+//chat.block('annoying_person');
+//chat.mentions=[my_username, 'yo!'];
+//chat.ment('cool_person');
+//chat.images=true;
+//chat.video=true;
+//chat.mediaSize='150px';
+
+// how many seconds to wait after using the scrollbar
+// to return to autoscrolling.
+//chat.scrollingPause=15;
+
+//end options
+
+var now_ms = function() { return (new Date()).getTime();  };
+
+Pauser = function(el, pauseDuration) {
+    this.el=el;
+    this.pauseDuration=pauseDuration;
+    this.paused=false;
+    this.pausePos=0;
+    this.startTime=0;
+    this.lastMsg=this.el.lastElementChild;
+    var context = this;
+    this.callbackfn = function() { context.onScroll(); };
+    this.el.addEventListener('scroll', this.callbackfn);
+};
+
+Pauser.prototype.delete = function() {
+    this.el.removeEventListener('scroll', this.callbackfn);
+};
+
+Pauser.prototype.onScroll = function() {
+   if (this.el.scrollTop==this.el.scrollTopMax) {
+       //if we're at the bottom and not paused
+       // thats normal operation
+       if (! (this.paused)) { return; }
+       // otherwise how long has it been since the
+       // last manual move?
+       var diff= now_ms() - this.startTime;
+       // if greater than pause duration, we'll stay
+       // at the bottom and no longer even consider
+       // the time diff until the next manual move.
+       //
+       if (diff > 1000*this.pauseDuration) { 
+           this.paused=false;
+       } else {
+       // otherwise to see if we'll stay, we need
+       // to evaluate if we were moved to the bottom
+       // manually 
+       // (the user signaling they want to 
+       // return to autoscroll) or just auto scrolling
+       // (in which case we're still under the pause
+       // duration.)
+           if (this.lastMsg == this.el.lastElementChild) {
+                // this could only happen under manual scroll
+                this.paused=false;
+           } else {
+                //this could conceivably happen under user scrolling under an extreme time coincidence,
+                //but because scroll event is called
+                //on every addition of a msg probably
+                //not.
+                this.el.scrollTop = this.pausePos;
+           }
+       }
+       //scroll because of element addition only
+       //leads to scrollTop values that are the max.
+       //so we only need to confirm it here.
+       //the only context in which this would not
+       //be a new element is manual scroll to bottom.
+       this.lastMsg=this.el.lastElementChild;
+   // if we're moving back up to the exact same
+   // position we're paused at, that's just
+   // enforcing the pause. so no-op needed.
+   // if we're moving to a position that is 
+   // neither the bottom or the pause position,
+   // that signifies manual movement which means
+   // to pause.
+   } else if (this.el.scrollTop != this.pausePos) {
+       this.paused=true;
+       this.pausePos=this.el.scrollTop;
+       this.startTime=now_ms();
+   }
+   this.lastMsg=this.el.lastElementChild;
+};
+
 var ChatImprover = function() {
     //default options.
     this.blocked_users=std_blocklist;
     this.mentions=[my_username, 'yo!'];
     this.images=true;
     this.video=true;
-    this.mediaSize='150px';    
+    this.mediaSize='150px';
+    this.scrollingPause=15;
     this.csshide = { att: 'display', val:'none'};   
     this.cssmentioned = { att: 'color', val: 'red'};
     this.color_whole_message=false;
+    this.pauser=null;
     
     this.checked_up_to=0;
     this.stop=false;
@@ -53,6 +147,12 @@ ChatImprover.prototype.stringToColour = function(str) {
 
     return colour;
 };
+ChatImprover.prototype.setScrollPause = function(duration) {
+    this.scrollPause=duration;
+    if (this.pauser !== null) {
+        this.pauser.pauseDuration=duration;
+    }
+};
 ChatImprover.prototype.loop = function() {
     // if manually instructed to stop
     // or newer version added end.
@@ -65,6 +165,9 @@ ChatImprover.prototype.loop = function() {
     if (chatbox === null) {
         console.log("err, couldn't find chatbox. ChatImprover is stopping");
         return 1;
+    }
+    if (this.pauser === null) {
+        this.pauser = new Pauser(chatbox, this.scrollPause);
     }
     //create array of all messages
     // (obvious O(linear) improvements could be made here
@@ -153,19 +256,3 @@ ChatImprover.prototype.loop = function() {
 var chat;
 window.chat = chat = new ChatImprover();
 chat.loop();
-
-//begin options
-//these are the default options, modify them as you see fit.
-//after you set one or more of these, to apply them retroactively run
-//chat.update(); 
-//if you have a long chatlog this may take a little time
-
-//chat.blocked_users=std_blocklist;
-//chat.block('annoying_person');
-//chat.mentions=[my_username, 'yo!'];
-//chat.ment('cool_person');
-//chat.images=true;
-//chat.video=true;
-//chat.mediaSize='150px';
-
-//end options
