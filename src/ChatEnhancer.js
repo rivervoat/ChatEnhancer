@@ -22,7 +22,7 @@ var std_blocklist=['billajong9', 'caffeine_pills_', 'campsont29', 'bpiniggiger',
 
 // how many seconds to wait after using the scrollbar
 // to return to autoscrolling.
-//chat.scrollingPause=15;
+//chat.setScrollPause(15);
 
 //end options
 
@@ -105,7 +105,7 @@ var ChatImprover = function() {
     this.images=true;
     this.video=true;
     this.mediaSize='150px';
-    this.scrollingPause=15;
+    this.scrollPause=15;
     this.csshide = { att: 'display', val:'none'};   
     this.cssmentioned = { att: 'color', val: 'red'};
     this.color_whole_message=false;
