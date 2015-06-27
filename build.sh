@@ -1,10 +1,14 @@
-#!/bin/bash
-#get current dir
-DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-mkdir -p out_standalone
+#!/bin/sh
+# get current dir
+# really should replace all this bash shell stuff with a build system
+# that could work more easily on Windows without cygwin
+
+DIR=`dirname "$0"`; SCRIPT_PATH=`eval "cd \"$SCRIPT_PATH\" && pwd"`
+
+mkdir -p ${DIR}/out_standalone
 
 tgt_bookmarklet() {
-    ./bookmarklet/./generate.sh > out_standalone/bookmarklet.js
+    ${DIR}/bookmarklet/./generate.sh > ${DIR}/out_standalone/bookmarklet.js
 }
 
 tgt_chrome() {
@@ -19,8 +23,9 @@ one will be generated for you."
     skipping chrome"
         return 1
     fi
+    keypath=`readlink -f $CHROME_KEY`
     chromium --pack-extension=${DIR}/chrome --pack-extension-key=$CHROME_KEY
-    mv chrome.crx out_standalone/ChatEnhancerChrome.crx
+    mv ${DIR}/chrome.crx ${DIR}/out_standalone/ChatEnhancerChrome.crx
     return 0
 }
 
@@ -29,8 +34,14 @@ tgt_all() {
     tgt_chrome
 }
 
+tgt_clean() {
+    if [ -e ${DIR}/out_standalone ]; then
+        rm -r ${DIR}/out_standalone
+    fi
+}
+
 if [ ! "$1" ]; then
     tgt_all
 else
-    for x in $@; do $x; done
+    for x in $@; do tgt_$x; done
 fi
