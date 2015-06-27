@@ -44,8 +44,20 @@ Pauser.prototype.delete = function() {
     this.el.removeEventListener('scroll', this.callbackfn);
 };
 
+
+
 Pauser.prototype.onScroll = function() {
-   if (this.el.scrollTop==this.el.scrollTopMax) {
+    var atEnd=false;
+    if ('scrollTopMax' in this.el) {
+        atEnd=this.el.scrollTop==this.el.scrollTopMax;
+    } else {
+        //scrolltop is float
+        //height and clientheight are int.
+        //sometimes they perceivably could a difference of 1
+        //due to float and weirdness.
+        atEnd = (Math.abs(Math.round(k.scrollTop) - (k.scrollHeight - k.clientHeight)) < 2);
+    }
+    if (atEnd) {
        //if we're at the bottom and not paused
        // thats normal operation
        if (! (this.paused)) { return; }
@@ -143,7 +155,7 @@ ChatImprover.prototype.stringToColour = function(str) {
     for (var i = 0, hash = 0; i < str.length; hash = str.charCodeAt(i++) + ((hash << 5) - hash));
 
     // int/hash to hex
-    for (var i = 0, colour = "#"; i < 3; colour += ("00" + ((hash >> i++ * 8) & 0xFF).toString(16)).slice(-2));
+    for (i = 0, colour = "#"; i < 3; colour += ("00" + ((hash >> i++ * 8) & 0xFF).toString(16)).slice(-2));
 
     return colour;
 };
