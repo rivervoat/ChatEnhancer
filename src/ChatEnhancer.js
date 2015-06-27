@@ -18,7 +18,7 @@ var std_blocklist=['billajong9', 'caffeine_pills_', 'campsont29', 'bpiniggiger',
 //chat.ment('cool_person');
 //chat.images=true;
 //chat.video=true;
-//chat.mediaSize='150px';
+//chat.mediaSize='175px';
 
 // how many seconds to wait after using the scrollbar
 // to return to autoscrolling.
@@ -128,7 +128,7 @@ var ChatImprover = function() {
     this.mentions=[my_username, 'yo!'];
     this.images=true;
     this.video=true;
-    this.mediaSize='150px';
+    this.mediaSize='175px';
     this.scrollPause=15;
     this.csshide = { att: 'display', val:'none'};   
     this.cssmentioned = { att: 'color', val: 'red'};
