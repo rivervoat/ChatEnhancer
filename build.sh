@@ -10,14 +10,18 @@ tgt_bookmarklet() {
 tgt_chrome() {
     chrome=0
     if [ ! "$CHROME_KEY" ]; then
-        echo "warning, you did not provide CHROME_KEY path for providing updates
+        echo "notice: you did not provide CHROME_KEY path for providing updates
 one will be generated for you."
+        # not an error, or even a warning, most people unfamiliar with the
+        # project will be building standalone, not for distrib.
     elif [ ! -f "$CHROME_KEY" ]; then
         echo "error, you provided a CHROME_KEY path but it wasn't an extant file
     skipping chrome"
+        return 1
     fi
     chromium --pack-extension=${DIR}/chrome --pack-extension-key=$CHROME_KEY
     mv chrome.crx out_standalone/ChatEnhancerChrome.crx
+    return 0
 }
 
 tgt_all() {
