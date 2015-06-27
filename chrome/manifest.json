@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name":             "Voat ChatEnhancer",
     "short_name":       "ChatEnhancer",
-    "version":          "0.2.0",
+    "version":          "0.2.1",
     "description":      "Ideas for new features for Voat chat, implemented. Not affiliated with Voat.",
     "author":           "/user/River",
     "homepage_url":     "https://github.com/rivervoat/ChatEnhancer",
