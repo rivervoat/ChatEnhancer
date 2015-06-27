@@ -55,7 +55,7 @@ Pauser.prototype.onScroll = function() {
         //height and clientheight are int.
         //sometimes they perceivably could a difference of 1
         //due to float and weirdness.
-        atEnd = (Math.abs(Math.round(k.scrollTop) - (k.scrollHeight - k.clientHeight)) < 2);
+        atEnd = (Math.abs(Math.round(this.el.scrollTop) - (this.el.scrollHeight - this.el.clientHeight)) < 2);
     }
     if (atEnd) {
        //if we're at the bottom and not paused
