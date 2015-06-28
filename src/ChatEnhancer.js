@@ -17,7 +17,7 @@ var std_blocklist=['billajong9', 'caffeine_pills_', 'campsont29', 'bpiniggiger',
 //chat.mentions=[my_username, 'yo!'];
 //chat.ment('cool_person');
 //chat.images=true;
-//chat.imageEmbiggening=true;
+//chat.mediaEmbiggening=true;
 //chat.embiggenedMediaSize='x2';
 //chat.video=true;
 //chat.mediaSize='175px';
@@ -130,11 +130,15 @@ var ChatImprover = function() {
     this.images=true;
     this.video=true;
     this.mediaSize='175px';
-    this.imageEmbiggening=true;
+    this.mediaEmbiggening=true;
     this.embiggenedMediaSize='x2';
     this.scrollPause=15;
-    this.csshide = { att: 'display', val:'none'};   
-    this.cssmentioned = { att: 'color', val: 'red'};
+    this.csshide = { att: 'display', val:'none'};
+    //'#379bbe' was a suggested color and i like it
+    // but it was found from feedback to confuse people
+    // vis a vis links like they had to read the entire
+    // message to see if it was a link or a mention.
+    this.cssmentioned = { att: 'color', val: '#55AA55'};
     this.color_whole_message=false;
     this.pauser=null;
     
@@ -281,7 +285,7 @@ ChatImprover.prototype.loop = function() {
             //like voat or other site people click lots of
             //unknown links all the time.
             var find_image=new RegExp('([^">])(https?://[^ ?$]*\.(jpg|png)) ', 'gi');
-            if (this.imageEmbiggening) {
+            if (this.mediaEmbiggening) {
                 x.innerHTML = (x.innerHTML+' ').replace(find_image, '$1<img src="$2" style="max-height:' + this.mediaSize +'; vertical-align: top"></img><a href="$2" target="_blank" style="font-size:0.5em">(link)</a> ').slice(0,-1);
             } else {
                 x.innerHTML = (x.innerHTML+' ').replace(find_image, '$1<a href="$2" target="_blank"><img src="$2" style="max-height:' + this.mediaSize +'; vertical-align: top"></img></a> ').slice(0,-1);
@@ -289,7 +293,8 @@ ChatImprover.prototype.loop = function() {
         }
         if (this.video) {
             //check for videos and tag em.
-            x.innerHTML = (x.innerHTML+' ').replace(new RegExp('([^">])(https?://[^ ?$]*\.(webm)) ', 'gi'), '$1<video src="$2" style="max-height:' + this.mediaSize +'; vertical-align: bottom" controls>$2</video> ').slice(0,-1);
+            var find_video=new RegExp('([^">])(https?://[^ ?$]*\.(webm)) ', 'gi');
+            x.innerHTML = (x.innerHTML+' ').replace(find_video, '$1<video src="$2" style="max-height:' + this.mediaSize +'; vertical-align: bottom" controls>$2</video> ').slice(0,-1);
         }
         //the way we avoid re-adding images and videos
         //for now is to just not add tags to links
@@ -298,17 +303,17 @@ ChatImprover.prototype.loop = function() {
         
         el.innerHTML=x.innerHTML;
         var imgnl=el.getElementsByTagName('img');
-        var imgElArr = [];
-
-        if (this.imageEmbiggening) {
-            for(var imgEl = imgnl.length; imgEl--; imgEl=0){
+        var videonl=el.getElementsByTagName('video');
+        if (this.mediaEmbiggening) {
+            for(var imgEl = imgnl.length; imgEl--; imgEl===0){
                 imgnl[imgEl].addEventListener('click',
                                                embiggenCallback);
             }
+            for(var videoEl = videonl.length; videoEl--; videoEl===0){
+                videonl[videoEl].addEventListener('click',
+                                               embiggenCallback);
+            }
         }
-        imgElArr.map(function() {
-            
-        });
         el.style.cssText=x.style.cssText;
     }
     // run this function again in 30ms after end
